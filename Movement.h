@@ -10,8 +10,11 @@
 
 #define Forward 1
 #define Backward 2
-#define Left 3
-#define Right 4
+#define Left45 3
+#define Right45 4
+#define Left90 5
+#define Right90 6
+#define Stop 7
 
 void Move_Robot(unsigned char movement);
 
