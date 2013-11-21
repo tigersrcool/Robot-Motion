@@ -1,34 +1,44 @@
 #include <msp430.h>
+#include "Movement.h"
 
 int main(void)
 {
     WDTCTL = WDTPW|WDTHOLD;                 // stop the watchdog timer
 
-    P1DIR |= BIT2;                // TA0CCR1 on P1.2
-    P1SEL |= BIT2;                // TA0CCR1 on P1.2
+    P1DIR |= BIT2|BIT1;                // TA0CCR1 on P1.2
+    P1SEL |= BIT2|BIT1;				// TA0CCR1 on P1.2
+    P2DIR |= BIT1|BIT0;
+    P2SEL |= BIT1|BIT0;
 
-    TACTL &= ~MC1|MC0;            // stop timer A0
+    TA0CTL &= ~MC1|MC0;            // stop timer A0
+    TA1CTL &= ~MC1|MC0;
 
-    TACTL |= TACLR;                // clear timer A0
+    TA0CTL |= TACLR;                // clear timer A0
+    TA1CTL |= TACLR;
 
-    TACTL |= TASSEL1;           // configure for SMCLK
+    TA0CTL |= TASSEL1;           // configure for SMCLK
+    TA1CTL |= TASSEL1;
 
-    TACCR0 = 100;                // set signal period to 100 clock cycles (~100 microseconds)
-    TACCR1 = 25;                // set duty cycle to 25/100 (25%)
+    TA0CCR0 = 100;                // set signal period to 100 clock cycles (~100 microseconds)
+    TA0CCR1 = 25; 					// set duty cycle to 25/100 (25%)
+    TA1CCR0 = 100;
+    TA1CCR1 = 25;
 
-    TACCTL1 |= OUTMOD_7;        // set TACCTL1 to Reset / Set mode
+    TA0CCTL1 |= OUTMOD_7;		// set TACCTL1 to Reset / Set mode
+    TA1CCTL1 |= OUTMOD_7;
 
-    TACTL |= MC0;                // count up
+    TA0CTL |= MC0;                // count up
+    TA1CTL |= MC0;
 
     while (1) {
         __delay_cycles(1000000);
-        TACCR1 = 50;            // set duty cycle to 50/100 (50%)
+        Move_Robot(Forward);
         __delay_cycles(1000000);
-        TACCR1 = 75;            // set duty cycle to 75/100 (75%)
+        Move_Robot(Backward);
         __delay_cycles(1000000);
-        TACCR1 = 100;            // set duty cycle to 100/100 (100%)
+        Move_Robot(Left);
         __delay_cycles(1000000);
-        TACCR1 = 25;            // set duty cycle to 25/100 (25%)
+        Move_Robot(Right);
     }
 
     return 0;
