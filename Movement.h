@@ -17,6 +17,7 @@
 #define Stop 7
 
 void Move_Robot(unsigned char movement);
+void Init_Robot(void);
 
 
 
